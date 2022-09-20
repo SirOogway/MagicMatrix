@@ -5,9 +5,10 @@ import android.os.Bundle
 import android.widget.*
 import androidx.core.view.children
 
+var rb3x3: RadioButton? = null
 var rb5x5: RadioButton? = null
 var rb7x7: RadioButton? = null
-var sizeMatrix: Int = 3
+var sizeMatrix: Int? = null
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,26 +16,32 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         var tvResutl = findViewById<TextView>(R.id.tvResult)
         var btnCalculate = findViewById<Button>(R.id.button)
-        var radioGroup = findViewById<RadioGroup>(R.id.radioGroup)
+        var radioGroup = findViewById<RadioGroup?>(R.id.radioGroup)
+        rb3x3 = findViewById(R.id.rb3x3)
         rb5x5 = findViewById(R.id.rb5x5)
         rb7x7 = findViewById(R.id.rb7x7)
         btnCalculate.setOnClickListener {
             tvResutl.text = ""
-            val sizeMatrix = when (radioGroup.checkedRadioButtonId) {
-                rb5x5?.id -> 5
-                rb7x7?.id -> 7
-                else -> 3
+            when (radioGroup?.checkedRadioButtonId) {
+                rb5x5?.id -> sizeMatrix = 5
+                rb7x7?.id -> sizeMatrix = 7
+                rb3x3?.id -> sizeMatrix = 3
+                else -> Toast.makeText(this, "Choose a Matriz Size", Toast.LENGTH_SHORT).show()
             }
-            var sizeHelperMatrix = sizeMatrix * 2 - 1
-            var helperMatrix = Array(sizeHelperMatrix) { Array<Int?>(sizeHelperMatrix) { null } }
-            fillHelperMatrix(helperMatrix)
-            for (row in helperMatrix.indices) {
-                tvResutl.text = "${tvResutl.text} \n"
-                for (arg in helperMatrix[row]) {
-                    if (arg != 0 && arg != null && arg < 10) tvResutl.text =
-                        "${tvResutl.text}   $arg  "
-                    if (arg != 0 && arg != null && arg >= 10) tvResutl.text =
-                        "${tvResutl.text} $arg  "
+
+            if (sizeMatrix != null) {
+                var sizeHelperMatrix = sizeMatrix!! * 2 - 1
+                var helperMatrix =
+                    Array(sizeHelperMatrix) { Array<Int?>(sizeHelperMatrix) { null } }
+                fillHelperMatrix(helperMatrix)
+                for (row in helperMatrix.indices) {
+                    tvResutl.text = "${tvResutl.text} \n"
+                    for (arg in helperMatrix[row]) {
+                        if (arg != 0 && arg != null && arg < 10) tvResutl.text =
+                            "${tvResutl.text}   $arg  "
+                        if (arg != 0 && arg != null && arg >= 10) tvResutl.text =
+                            "${tvResutl.text} $arg  "
+                    }
                 }
             }
         }
